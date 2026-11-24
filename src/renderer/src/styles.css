@@ -1,0 +1,92 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Segoe UI Variable Text', 'Segoe UI', 'Inter', system-ui, sans-serif;
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'Cascadia Code', 'Cascadia Mono', Consolas, ui-monospace, monospace;
+
+  --color-ink-950: #07090d; /* sfondo app */
+  --color-ink-900: #0b0e14; /* sidebar */
+  --color-ink-850: #10141c; /* card */
+  --color-ink-800: #151a24; /* card hover / input */
+  --color-ink-700: #1e2532; /* bordi */
+  --color-ink-600: #2a3344;
+  --color-ink-400: #5f6b7e; /* testo secondario */
+  --color-ink-300: #8b98a9;
+  --color-ink-100: #dfe6ee; /* testo primario */
+
+  --color-signal: #22d3ee; /* ciano accento */
+  --color-signal-dim: #0e7490;
+  --color-volt: #3b82f6; /* blu elettrico */
+  --color-ok: #34d399;
+  --color-warn: #fbbf24;
+  --color-bad: #f87171;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-ink-950 text-ink-100 font-sans antialiased;
+    font-size: 15px; /* leggibile a distanza dal banco */
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--color-signal) 35%, transparent);
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-ink-600) transparent;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+}
+
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-3.5 py-2 text-sm font-medium
+    transition-colors disabled:cursor-not-allowed disabled:opacity-40;
+}
+
+@layer components {
+  .drag {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+  .panel {
+    @apply rounded-xl border border-ink-700 bg-ink-850;
+  }
+  .label {
+    @apply text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-400;
+  }
+  .field {
+    @apply w-full rounded-lg border border-ink-700 bg-ink-800 px-3 py-2 text-ink-100 placeholder:text-ink-400
+      transition-colors focus:border-signal focus:outline-none;
+  }
+  .btn-primary {
+    @apply btn bg-signal text-ink-950 hover:bg-cyan-300;
+  }
+  .btn-ghost {
+    @apply btn border border-ink-700 bg-ink-800 text-ink-100 hover:border-ink-600 hover:bg-ink-700;
+  }
+  .kbd {
+    @apply rounded border border-ink-600 bg-ink-800 px-1.5 py-0.5 font-mono text-[10px] text-ink-300;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--color-signal) 55%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+.live-dot {
+  animation: pulse-ring 1.6s ease-out infinite;
+}

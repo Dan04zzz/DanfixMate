@@ -1,0 +1,25 @@
+appId: it.danfixmate.app
+productName: DanfixMate
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.*'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!{README.md,docs/*}'
+asarUnpack:
+  - '**/node_modules/better-sqlite3/**'
+extraResources:
+  # Metti qui platform-tools (adb.exe + DLL) e scrcpy: vengono inclusi nell'installer
+  - from: resources/bin
+    to: bin
+    filter: ['**/*']
+win:
+  target: nsis
+  executableName: DanfixMate
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: always
+npmRebuild: true

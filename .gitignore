@@ -1,0 +1,13 @@
+node_modules
+out
+dist
+*.log
+.DS_Store
+# binari esterni: DanfixMate li scarica da solo (vedi resources/bin/README.md)
+resources/bin/platform-tools/
+resources/bin/scrcpy/
+resources/bin/libimobiledevice/
+*.tsbuildinfo
+
+# file di lavoro non del progetto
+Claude outputs/
