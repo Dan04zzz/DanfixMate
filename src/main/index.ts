@@ -60,6 +60,8 @@ function createWindow(): BrowserWindow {
     backgroundColor: '#07090d',
     title: 'DanfixMate',
     autoHideMenuBar: true,
+    // nell'app installata l'icona arriva dall'exe; in sviluppo la indichiamo a mano
+    ...(app.isPackaged ? {} : { icon: join(app.getAppPath(), 'build', 'icon.png') }),
     titleBarStyle: 'hidden',
     titleBarOverlay: { color: '#07090d', symbolColor: '#8b98a9', height: 40 },
     webPreferences: {

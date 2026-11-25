@@ -1,0 +1,67 @@
+# Crea una Release GitHub con gli .exe di DanfixMate.
+# Si avvia pubblicando un tag di versione:   git tag v0.1.0  &&  git push origin v0.1.0
+# Si può anche avviare a mano da GitHub → Actions → "Release Windows" (in quel caso
+# gli exe finiscono solo negli Artifacts dell'esecuzione, senza creare la Release).
+name: Release Windows
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # Il tag (v0.1.0) deve corrispondere alla versione in package.json (0.1.0)
+      - name: Controllo versione
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        run: |
+          $tag = '${{ github.ref_name }}'.TrimStart('v')
+          $pkg = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ($tag -ne $pkg) { throw "Il tag v$tag non corrisponde a package.json ($pkg): aggiorna 'version' e ricrea il tag." }
+
+      # postinstall: scarica Electron e compila better-sqlite3 per Electron/Windows
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - name: Build e pacchetti (installer + portable)
+        run: npx electron-vite build && npx electron-builder --win --x64 --publish never
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false' # nessun certificato di firma
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DanfixMate-windows
+          path: dist/*.exe
+          if-no-files-found: error
+
+      - name: Pubblica la Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: DanfixMate ${{ github.ref_name }}
+          files: dist/*.exe
+          generate_release_notes: true
+          body: |
+            ## Download
+            - **DanfixMate-Setup-*.exe** — installer (consigliato): crea il collegamento sul desktop e nel menu Start.
+            - **DanfixMate-*-portable.exe** — si avvia senza installazione.
+
+            Al primo avvio DanfixMate scarica da solo adb e scrcpy. I dati restano in `%APPDATA%\DanfixMate`.
+
+            > L'eseguibile non è firmato digitalmente: Windows SmartScreen può mostrare "Windows ha protetto il PC".
+            > Clicca **Ulteriori informazioni → Esegui comunque**.

@@ -35,6 +35,23 @@ Dettagli in `resources/bin/README.md`.
 
 `%APPDATA%\DanfixMate\data\danfixmate.sqlite` (modalità WAL). Backup a caldo da sidebar o `Ctrl+Shift+B`.
 
+## Creare una release (exe)
+
+Le release si creano da sole su GitHub con **GitHub Actions** (`.github/workflows/release.yml`):
+
+1. Aggiorna `"version"` in `package.json` (es. `0.2.0`) e fai commit + push.
+2. Crea e pubblica il tag con la stessa versione:
+   ```bat
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+3. In circa 10 minuti su GitHub → **Releases** compaiono:
+   - `DanfixMate-Setup-0.2.0.exe` — installer
+   - `DanfixMate-0.2.0-portable.exe` — si avvia senza installazione
+
+Per creare l'exe sul proprio PC invece: `npm run dist:win` (i file finiscono in `dist\`).
+L'exe non è firmato: Windows SmartScreen chiede conferma (*Ulteriori informazioni → Esegui comunque*).
+
 ## Scorciatoie da tastiera
 
 | Tasto | Azione |

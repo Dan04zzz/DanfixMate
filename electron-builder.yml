@@ -1,25 +1,40 @@
 appId: it.danfixmate.app
 productName: DanfixMate
+copyright: Copyright © 2026 Daniel
 directories:
   buildResources: build
+  output: dist
 files:
   - '!**/.vscode/*'
   - '!src/*'
+  - '!scripts/**'
+  - '!.github/**'
   - '!electron.vite.config.*'
-  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json,.prettierrc,.gitattributes}'
   - '!{README.md,docs/*}'
 asarUnpack:
   - '**/node_modules/better-sqlite3/**'
 extraResources:
-  # Metti qui platform-tools (adb.exe + DLL) e scrcpy: vengono inclusi nell'installer
+  # binari opzionali da includere nell'installer (altrimenti DanfixMate li scarica al primo avvio)
   - from: resources/bin
     to: bin
-    filter: ['**/*']
+    filter: ['**/*', '!README.md']
 win:
-  target: nsis
+  icon: build/icon.ico
   executableName: DanfixMate
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
 nsis:
   oneClick: false
+  perMachine: false
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: always
+  createStartMenuShortcut: true
+  shortcutName: DanfixMate
+  artifactName: DanfixMate-Setup-${version}.${ext}
+portable:
+  artifactName: DanfixMate-${version}-portable.${ext}
 npmRebuild: true
